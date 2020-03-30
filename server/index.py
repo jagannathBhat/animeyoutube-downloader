@@ -73,7 +73,7 @@ def getDownloadLinks(seriesName, start, end):
     return {'name': seriesInfo['name'], 'img': seriesInfo['img'], 'links': links}
 
 
-app = Flask(__name__, static_folder='client/build')
+app = Flask(__name__, static_folder='public')
 
 
 @app.route('/generate', methods=['POST'])
