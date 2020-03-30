@@ -19,6 +19,10 @@ export const useStyles = makeStyles(theme => ({
 			marginTop: theme.spacing(2)
 		}
 	},
+	img: {
+		maxWidth: 240,
+		width: '84%'
+	},
 	linkList: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -30,7 +34,7 @@ export const useStyles = makeStyles(theme => ({
 	root: {
 		borderRadius: '0px',
 		flex: 1,
-		padding: theme.spacing(3)
+		padding: theme.spacing(2)
 	},
 	rootBig: {
 		padding: theme.spacing(6)

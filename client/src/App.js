@@ -54,14 +54,14 @@ const App = () => {
 			<Paper
 				elevation={0}
 				className={
-					useMediaQuery('(min-width:660px)')
+					useMediaQuery('(min-width:720px)')
 						? classes.root + ' ' + classes.rootBig
 						: classes.root
 				}
 			>
 				<header>
 					<Typography
-						variant={useMediaQuery('(min-width:660px)') ? 'h1' : 'h3'}
+						variant={useMediaQuery('(min-width:720px)') ? 'h1' : 'h3'}
 						className={classes.title}
 					>
 						AnimeYoutube
@@ -98,7 +98,11 @@ const App = () => {
 					{info !== null ? (
 						<>
 							{info.img ? (
-								<img src={info.img} alt={info.name + ' poster'} />
+								<img
+									alt={info.name + ' poster'}
+									className={classes.img}
+									src={info.img}
+								/>
 							) : (
 								<></>
 							)}
