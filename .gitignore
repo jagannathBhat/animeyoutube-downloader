@@ -19,3 +19,5 @@ client/yarn.lock
 client/package-lock.json
 yarn.lock
 package-lock.json
+
+build
