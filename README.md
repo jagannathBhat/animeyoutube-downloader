@@ -5,7 +5,7 @@ Download the anime you want from AnimeYoutube without any of the ads. This proje
 ## How to Use
 
 1. Download this repo.
-2. Install NodeJS, Python and Pip.
+2. Install [NodeJS](https://nodejs.org/en/download/), [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installing/).
 3. Run the following commands inside the folder. (It might take a few minutes to execute)
 
    ```bash
