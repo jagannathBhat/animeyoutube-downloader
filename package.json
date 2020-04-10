@@ -12,9 +12,16 @@
 		"type": "git",
 		"url": "git+https://github.com/jagannathBhat/animeyoutube-downloader.git"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"keywords": [
+		"anime",
+		"downloader",
+		"flask",
+		"react",
+		"reactjs",
+		"scraper"
+	],
+	"author": "Jagannath Bhat",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/jagannathBhat/animeyoutube-downloader/issues"
 	},
