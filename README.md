@@ -27,7 +27,7 @@ Open Development servers using the following command.
 ### Backend
 
 - The BeautifulSoup4 library is used for scrapping the download links of the videos from AnimeYoutube.
-- THe server is built using Flask.
+- The server is built using Flask.
 
 ### Frontend
 
