@@ -4,9 +4,10 @@
 	"description": "Download the anime you want from AnimeYoutube without any of the ads. This project is not rpduction ready because of some issues. Please check the issues section if you can help me out with any of them.",
 	"scripts": {
 		"build": "npm run build --prefix client",
-		"dev": "concurrently \"python3 server/index.py\" \"npm start --prefix client\"",
-		"install": "npm install --prefix client && cd server && pip install -r requirements.txt ",
-		"start": "python3 server/index.py"
+		"client": "npm start --prefix client",
+		"dev": "concurrently \"npm start\" \"npm run client\"",
+		"install": "npm install --prefix client && pipenv install",
+		"start": "python wsgi.py"
 	},
 	"repository": {
 		"type": "git",
