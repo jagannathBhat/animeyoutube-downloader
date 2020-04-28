@@ -14,19 +14,17 @@ import {
 } from '@material-ui/core'
 
 import './App.css'
+import Episode from './Episode'
 import { useStyles } from './theme'
 
 const App = () => {
-	const [info, setInfo] = useState(null)
-	const [loading, setLoading] = useState(false)
-
 	const classes = useStyles()
+
+	const inputHandler = ({ target: { value } }) => setAnimeName(value)
 
 	const submitHandler = async event => {
 		event.preventDefault()
 		setLoading(true)
-
-		const animeName = document.getElementById('animeNameInput').value
 
 		if (animeName === '') {
 			setInfo({ name: 'No name entered', links: [] })
@@ -36,18 +34,29 @@ const App = () => {
 
 		try {
 			const res = await axios.post(
-				'/generate',
+				'/info',
 				{ name: animeName },
 				{ headers: { 'Content-Type': 'application/json' } }
 			)
 			setInfo(res.data)
-			setLoading(false)
+			let newEpisodes = []
+			for (let index = res.data.start; index <= res.data.end; index++)
+				newEpisodes.push(index)
+			setEpisodes(newEpisodes)
 		} catch (err) {
-			console.log(err)
-			setInfo({ name: 'Generation Failed', links: [] })
-			setLoading(false)
+			console.error(err)
+			setInfo({ name: 'Generation Failed', episodes: [] })
 		}
+		setLoading(false)
 	}
+
+	const [animeName, setAnimeName] = useState('')
+
+	const [episodes, setEpisodes] = useState([])
+
+	const [info, setInfo] = useState(null)
+
+	const [loading, setLoading] = useState(false)
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -71,7 +80,6 @@ const App = () => {
 					<form className={classes.form} onSubmit={submitHandler}>
 						<TextField
 							autoFocus
-							id='animeNameInput'
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position='start'>
@@ -79,11 +87,13 @@ const App = () => {
 									</InputAdornment>
 								),
 							}}
+							onChange={inputHandler}
 							placeholder='name-of-anime'
+							value={animeName}
 						/>
 						<div className={classes.wrapper}>
 							<Button disabled={loading} type='submit'>
-								Generate Links
+								Start
 							</Button>
 							{loading && (
 								<CircularProgress
@@ -109,29 +119,15 @@ const App = () => {
 							<Typography component='h2' variant='h4'>
 								{info.name}
 							</Typography>
-							<div className={classes.linkList}>
-								{info.links.map((linkGroup, key) => (
-									<div key={key}>
-										<Typography component='p' variant='h6'>
-											Episode {key + 1}
-										</Typography>
-										{linkGroup.map((link, key) => (
-											<a
-												href={link}
-												key={key}
-												target='_blank'
-												rel='noopener noreferrer'
-											>
-												<Button>Link {key + 1}</Button>
-											</a>
-										))}
-									</div>
-								))}
-							</div>
 						</>
 					) : (
 						<></>
 					)}
+					<div className={classes.linkList}>
+						{episodes.map(no => (
+							<Episode name={animeName} key={no} no={no} />
+						))}
+					</div>
 				</main>
 			</Paper>
 		</ThemeProvider>

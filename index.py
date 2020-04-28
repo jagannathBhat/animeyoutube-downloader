@@ -19,14 +19,6 @@ blacklist = [
 ]
 
 
-def downloadVideo(url, fileName):
-    r = requests.get(url, stream=True)
-    with open(fileName + '.mp4', 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024*1024):
-            if chunk:
-                f.write(chunk)
-
-
 def getEpisodeInfo(seriesName):
     res = requests.get('http://animeyoutube.com/' + seriesName)
     tree = html.fromstring(res.content)
@@ -40,61 +32,55 @@ def getEpisodeInfo(seriesName):
     return {'img': img, 'name': name, 'no': no}
 
 
-def getVideo(url):
+def getVideo(name, no):
+    url = 'http://animeyoutube.com/episode/' + name + '-episode-' + str(no)
     res = requests.get(url)
-    videoUrl = re.search(r'\/\/vidstreaming\.io.*?\"',
-                         str(res.content)).group(0)
-    videoUrl = 'https:' + re.sub(r'streaming.php', 'download', videoUrl[:-1])
-
-    res = requests.get(videoUrl)
-    print(videoUrl)
-    soup = BeautifulSoup(res.content, "lxml")
-    mydivs = soup.findAll("div", {"class": "dowload"})
+    url = re.search(r'\/\/vidstreaming\.io.*?\"',
+                    str(res.content)).group(0)
+    url = 'https:' + re.sub(r'streaming.php', 'download', url[:-1])
+    res = requests.get(url)
+    soup = BeautifulSoup(res.content, 'lxml')
+    mydivs = soup.findAll('div', {'class': 'dowload'})
     links = []
     for div in mydivs:
         for link in div.findAll('a'):
             if link.getText() != 'Download For Ad':
                 links.append(link.get('href'))
-    return links
+    return {'links': links}
 
 
-def getVideos(seriesName, start, end):
-    links = []
-    for i in range(start, end + 1):
-        links.append(getVideo('http://animeyoutube.com/episode/' +
-                              seriesName + '-episode-' + str(i)))
-    print(links)
-    return links
-
-
-def getDownloadLinks(seriesName, start, end):
+def getInfo(seriesName, start, end):
     seriesInfo = getEpisodeInfo(seriesName)
-    print(seriesInfo)
     if end == -1 or end > seriesInfo['no']:
         end = seriesInfo['no']
     if start < 1:
         start = 1
     if start > end:
         start = end
-    links = getVideos(seriesName, start, end)
-    return {'name': seriesInfo['name'], 'img': seriesInfo['img'], 'links': links}
+    return {'name': seriesInfo['name'], 'img': seriesInfo['img'], 'start': start, 'end': end}
 
 
 app = Flask(__name__, static_folder='./client/build')
 
 
-@app.route('/generate', methods=['POST'])
-def respondGenerate():
+@app.route('/info', methods=['POST'])
+def respondInfo():
     data = json.loads(request.data)
-    print(data['name'])
-    responseData = getDownloadLinks(data['name'], 1, -1)
+    responseData = getInfo(data['name'], 1, -1)
+    return json.dumps(responseData)
+
+
+@app.route('/link', methods=['POST'])
+def respondLink():
+    data = json.loads(request.data)
+    responseData = getVideo(data['name'], data['no'])
     return json.dumps(responseData)
 
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    if path != '' and os.path.exists(app.static_folder + '/' + path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
