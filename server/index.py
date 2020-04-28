@@ -47,10 +47,15 @@ def getVideo(url):
     videoUrl = 'https:' + re.sub(r'streaming.php', 'download', videoUrl[:-1])
 
     res = requests.get(videoUrl)
+    print(videoUrl)
     soup = BeautifulSoup(res.content, "lxml")
-    for link in soup.findAll('a'):
-        if link.get('download') != None:
-            return link.get('href')
+    mydivs = soup.findAll("div", {"class": "dowload"})
+    links = []
+    for div in mydivs:
+        for link in div.findAll('a'):
+            if link.getText() != 'Download For Ad':
+                links.append(link.get('href'))
+    return links
 
 
 def getVideos(seriesName, start, end):
@@ -58,11 +63,13 @@ def getVideos(seriesName, start, end):
     for i in range(start, end + 1):
         links.append(getVideo('http://animeyoutube.com/episode/' +
                               seriesName + '-episode-' + str(i)))
+    print(links)
     return links
 
 
 def getDownloadLinks(seriesName, start, end):
     seriesInfo = getEpisodeInfo(seriesName)
+    print(seriesInfo)
     if end == -1 or end > seriesInfo['no']:
         end = seriesInfo['no']
     if start < 1:

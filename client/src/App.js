@@ -10,7 +10,7 @@ import {
 	TextField,
 	ThemeProvider,
 	Typography,
-	useMediaQuery
+	useMediaQuery,
 } from '@material-ui/core'
 
 import './App.css'
@@ -77,7 +77,7 @@ const App = () => {
 									<InputAdornment position='start'>
 										animeyoutube.com/
 									</InputAdornment>
-								)
+								),
 							}}
 							placeholder='name-of-anime'
 						/>
@@ -110,10 +110,22 @@ const App = () => {
 								{info.name}
 							</Typography>
 							<div className={classes.linkList}>
-								{info.links.map((link, key) => (
-									<a download href={link} key={key} rel='noopener noreferrer'>
-										<Button>Episode {key + 1}</Button>
-									</a>
+								{info.links.map((linkGroup, key) => (
+									<div key={key}>
+										<Typography component='p' variant='h6'>
+											Episode {key + 1}
+										</Typography>
+										{linkGroup.map((link, key) => (
+											<a
+												href={link}
+												key={key}
+												target='_blank'
+												rel='noopener noreferrer'
+											>
+												<Button>Link {key + 1}</Button>
+											</a>
+										))}
+									</div>
 								))}
 							</div>
 						</>
@@ -128,8 +140,8 @@ const App = () => {
 
 const theme = createMuiTheme({
 	palette: {
-		type: 'dark'
-	}
+		type: 'dark',
+	},
 })
 
 export default App
