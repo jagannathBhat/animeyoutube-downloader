@@ -1,0 +1,1 @@
+{"version":3,"sources":["App.css"],"names":[],"mappings":"AAAA,gBAGC,cAAe,CACf,YAAa,CACb,eAAgB,CAChB,QAAW,CACX,UACD,CAEA,EACC,aAAc,CACd,uBACD","file":"main.4fa8539b.chunk.css","sourcesContent":["body,\nhtml,\n#root {\n\tcursor: default;\n\tdisplay: flex;\n\tmin-height: 100%;\n\tmargin: 0px;\n\twidth: 100%;\n}\n\na {\n\tcolor: inherit;\n\ttext-decoration: inherit;\n}\n"]}
