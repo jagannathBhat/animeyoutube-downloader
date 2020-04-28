@@ -98,7 +98,3 @@ def catch_all(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
-
-
-if __name__ == '__main__':
-    app.run('0.0.0.0')
