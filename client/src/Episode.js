@@ -38,8 +38,13 @@ const Episode = ({ no, url }) => {
 			{Links ? (
 				Links.map((link, key) => {
 					return (
-						<a href={link} key={key} target='_blank' rel='noopener noreferrer'>
-							<Button>Link {key + 1}</Button>
+						<a
+							href={link.url}
+							key={key}
+							target='_blank'
+							rel='noopener noreferrer'
+						>
+							<Button>{link.name}</Button>
 						</a>
 					)
 				})
