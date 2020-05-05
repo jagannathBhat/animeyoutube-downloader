@@ -6,6 +6,7 @@
 		"build": "npm run build --prefix client",
 		"client": "npm start --prefix client",
 		"dev": "concurrently \"npm start\" \"npm run client\"",
+		"deploy": "git push heroku master",
 		"install": "npm install --prefix client && pipenv install",
 		"start": "python wsgi.py"
 	},
