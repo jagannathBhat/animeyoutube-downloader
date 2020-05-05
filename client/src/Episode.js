@@ -4,7 +4,7 @@ import { Button, CircularProgress, Typography } from '@material-ui/core'
 
 import { useStyles } from './theme'
 
-const Episode = ({ name, no }) => {
+const Episode = ({ no, url }) => {
 	const Classes = useStyles()
 
 	const getLink = async () => {
@@ -12,15 +12,19 @@ const Episode = ({ name, no }) => {
 		try {
 			const res = await axios.post(
 				'/link',
-				{ name, no },
+				{ no, url },
 				{ headers: { 'Content-Type': 'application/json' } }
 			)
 			setLinks(res.data.links)
 			setLoading(false)
 		} catch (err) {
 			console.error(err)
+			setError(true)
+			setLoading(false)
 		}
 	}
+
+	const [Error, setError] = useState(false)
 
 	const [Links, setLinks] = useState(null)
 
@@ -40,14 +44,19 @@ const Episode = ({ name, no }) => {
 					)
 				})
 			) : (
-				<div className={Classes.wrapper}>
-					<Button disabled={Loading} onClick={getLink}>
-						Get Links
-					</Button>
-					{Loading && (
-						<CircularProgress size={24} className={Classes.buttonProgress} />
+				<>
+					<div className={Classes.wrapper}>
+						<Button disabled={Loading} onClick={getLink}>
+							Get Links
+						</Button>
+						{Loading && (
+							<CircularProgress size={24} className={Classes.buttonProgress} />
+						)}
+					</div>
+					{Error && (
+						<Typography component='span'>Couldn't fetch links</Typography>
 					)}
-				</div>
+				</>
 			)}
 		</div>
 	)

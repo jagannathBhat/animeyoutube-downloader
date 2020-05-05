@@ -5,7 +5,6 @@ import {
 	Button,
 	CircularProgress,
 	createMuiTheme,
-	InputAdornment,
 	Paper,
 	TextField,
 	ThemeProvider,
@@ -20,26 +19,28 @@ import { useStyles } from './theme'
 const App = () => {
 	const classes = useStyles()
 
-	const inputHandler = ({ target: { value } }) => setAnimeName(value)
+	const inputHandler = ({ target: { value } }) => setUrl(value)
 
 	const submitHandler = async event => {
 		event.preventDefault()
 		setLoading(true)
 
-		if (animeName === '') {
-			setInfo({ name: 'No name entered', links: [] })
+		if (url === '') {
+			setInfo({ name: 'No URL entered', links: [] })
 			setLoading(false)
 			return
 		}
 
 		try {
+			let newEpisodes = []
+			setEpisodes(newEpisodes)
+			setInfo(null)
 			const res = await axios.post(
 				'/info',
-				{ name: animeName },
+				{ url },
 				{ headers: { 'Content-Type': 'application/json' } }
 			)
 			setInfo(res.data)
-			let newEpisodes = []
 			for (let index = res.data.start; index <= res.data.end; index++)
 				newEpisodes.push(index)
 			setEpisodes(newEpisodes)
@@ -50,7 +51,7 @@ const App = () => {
 		setLoading(false)
 	}
 
-	const [animeName, setAnimeName] = useState('')
+	const [url, setUrl] = useState('')
 
 	const [episodes, setEpisodes] = useState([])
 
@@ -80,16 +81,10 @@ const App = () => {
 					<form className={classes.form} onSubmit={submitHandler}>
 						<TextField
 							autoFocus
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'>
-										animeyoutube.com/
-									</InputAdornment>
-								),
-							}}
+							helperText='Enter URL of anime from animeyoutube.com or www1.kiss-anime.website'
 							onChange={inputHandler}
-							placeholder='name-of-anime'
-							value={animeName}
+							placeholder='URL of anime'
+							value={url}
 						/>
 						<div className={classes.wrapper}>
 							<Button disabled={loading} type='submit'>
@@ -125,7 +120,7 @@ const App = () => {
 					)}
 					<div className={classes.linkList}>
 						{episodes.map(no => (
-							<Episode name={animeName} key={no} no={no} />
+							<Episode key={no} no={no} url={url} />
 						))}
 					</div>
 				</main>
