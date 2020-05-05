@@ -1,6 +1,6 @@
 # AnimeYoutube Downloader
 
-Download the anime you want from AnimeYoutube without any of the ads. This project is not rpduction ready because of some issues. Please check the issues section if you can help me out with any of them.
+Download the anime you want from AnimeYoutube or Kiss Anime without any of the ads. This project is not production ready because of some issues. Please check the issues section if you can help me out with any of them.
 
 ## How to Use
 
