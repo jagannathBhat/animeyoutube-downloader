@@ -10,6 +10,9 @@ export const useStyles = makeStyles(theme => ({
 		marginTop: -12,
 		marginLeft: -12,
 	},
+	dark: {
+		opacity: 0.6,
+	},
 	form: {
 		alignItems: 'start',
 		display: 'flex',
@@ -30,6 +33,14 @@ export const useStyles = makeStyles(theme => ({
 	},
 	main: {
 		margin: theme.spacing(3) + 'px 0px',
+	},
+	result: {
+		display: 'inline-block',
+		margin: 12,
+		maxWidth: 240,
+		textAlign: 'center',
+		verticalAlign: 'top',
+		width: '100%',
 	},
 	root: {
 		borderRadius: '0px',

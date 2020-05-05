@@ -11,6 +11,7 @@ import {
 	Typography,
 	useMediaQuery,
 } from '@material-ui/core'
+import { Search } from '@material-ui/icons'
 
 import './App.css'
 import Episode from './Episode'
@@ -19,28 +20,20 @@ import { useStyles } from './theme'
 const App = () => {
 	const classes = useStyles()
 
-	const inputHandler = ({ target: { value } }) => setUrl(value)
-
-	const submitHandler = async event => {
-		event.preventDefault()
-		setLoading(true)
-
-		if (url === '') {
-			setInfo({ name: 'No URL entered', links: [] })
-			setLoading(false)
-			return
-		}
+	const getItem = async ({ name, img, url }) => {
+		setUrl(url)
+		setLoadingItem(true)
 
 		try {
 			let newEpisodes = []
 			setEpisodes(newEpisodes)
-			setInfo(null)
+			setInfo({ img, name })
+			setResults(null)
 			const res = await axios.post(
 				'/info',
 				{ url },
 				{ headers: { 'Content-Type': 'application/json' } }
 			)
-			setInfo(res.data)
 			for (let index = res.data.start; index <= res.data.end; index++)
 				newEpisodes.push(index)
 			setEpisodes(newEpisodes)
@@ -48,7 +41,49 @@ const App = () => {
 			console.error(err)
 			setInfo({ name: 'Generation Failed', episodes: [] })
 		}
+
+		setLoadingItem(false)
+	}
+
+	const inputHandler = ({ target: { value } }) => setTerm(value)
+
+	const kissAnime = () => {
+		setLoadingKiss(true)
+		searchItem(1)
+	}
+
+	const searchItem = async website => {
+		if (term === '') {
+			setInfo({ name: 'No Term entered', links: [] })
+			setLoading(false)
+			setLoadingKiss(false)
+			return
+		}
+
+		try {
+			setEpisodes([])
+			setInfo(null)
+			setResults(null)
+			const res = await axios.post(
+				'/search',
+				{ term, website },
+				{ headers: { 'Content-Type': 'application/json' } }
+			)
+			if (res.data.results.length === 0)
+				setInfo({ name: 'No results found', episodes: [] })
+			else setResults(res.data.results)
+		} catch (err) {
+			console.error(err)
+			setInfo({ name: 'Generation Failed', episodes: [] })
+		}
 		setLoading(false)
+		setLoadingKiss(false)
+	}
+
+	const submitHandler = event => {
+		setLoading(true)
+		event.preventDefault()
+		searchItem(0)
 	}
 
 	const [url, setUrl] = useState('')
@@ -58,6 +93,14 @@ const App = () => {
 	const [info, setInfo] = useState(null)
 
 	const [loading, setLoading] = useState(false)
+
+	const [loadingKiss, setLoadingKiss] = useState(false)
+
+	const [loadingItem, setLoadingItem] = useState(false)
+
+	const [results, setResults] = useState(null)
+
+	const [term, setTerm] = useState('')
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -81,16 +124,29 @@ const App = () => {
 					<form className={classes.form} onSubmit={submitHandler}>
 						<TextField
 							autoFocus
-							helperText='Enter URL of anime from animeyoutube.com or www1.kiss-anime.website'
+							InputProps={{
+								startAdornment: <Search />,
+							}}
 							onChange={inputHandler}
-							placeholder='URL of anime'
-							value={url}
+							placeholder='Search'
+							value={term}
 						/>
 						<div className={classes.wrapper}>
 							<Button disabled={loading} type='submit'>
-								Start
+								Search on AnimeYoutube
 							</Button>
 							{loading && (
+								<CircularProgress
+									size={24}
+									className={classes.buttonProgress}
+								/>
+							)}
+						</div>
+						<div className={classes.wrapper}>
+							<Button disabled={loadingKiss} onClick={kissAnime}>
+								Search on Kiss Anime
+							</Button>
+							{loadingKiss && (
 								<CircularProgress
 									size={24}
 									className={classes.buttonProgress}
@@ -100,23 +156,49 @@ const App = () => {
 					</form>
 				</header>
 				<main className={classes.main}>
-					{info !== null ? (
+					{results && (
 						<>
-							{info.img ? (
+							{results.map(info => (
+								<div className={classes.result} onClick={() => getItem(info)}>
+									{info.img && (
+										<img
+											alt={info.name + ' poster'}
+											className={classes.img}
+											src={info.img}
+										/>
+									)}
+									<Typography component='h2' variant='h6'>
+										{info.name}
+									</Typography>
+								</div>
+							))}
+						</>
+					)}
+					{info && (
+						<div
+							className={
+								loadingItem
+									? classes.wrapper + ' ' + classes.dark
+									: classes.wrapper
+							}
+						>
+							{info.img && (
 								<img
 									alt={info.name + ' poster'}
 									className={classes.img}
 									src={info.img}
 								/>
-							) : (
-								<></>
 							)}
 							<Typography component='h2' variant='h4'>
 								{info.name}
 							</Typography>
-						</>
-					) : (
-						<></>
+							{loadingItem && (
+								<CircularProgress
+									size={24}
+									className={classes.buttonProgress}
+								/>
+							)}
+						</div>
 					)}
 					<div className={classes.linkList}>
 						{episodes.map(no => (
