@@ -74,6 +74,8 @@ def getVideo(animeUrl, no):
         for link in div.findAll('a'):
             if 'download for ad' not in link.getText().lower():
                 links.append({'name': link.getText(), 'url': link.get('href')})
+    if len(links) == 0:
+        links.append({'name': 'Links', 'url': url})
     return {'links': links}
 
 
